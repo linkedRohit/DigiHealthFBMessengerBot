@@ -123,11 +123,11 @@ function processInput(senderID, message) {
 function NotifyUserAboutProcessing(senderID) {
   var notifyData = {
     "recipient":{
-      "id":senderID
+      "id": senderID
     },
     "sender_action":"typing_on"
   };
-
+console.log(notifyData);
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_ACCESS_TOKEN },
