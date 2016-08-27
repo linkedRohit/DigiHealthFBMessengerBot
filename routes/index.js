@@ -21,7 +21,6 @@ router.get('/webhook', function(req, res) {
 
 router.post('/webhook', function (req, res) {
   var data = req.body;
-console.log(data);
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
@@ -68,7 +67,7 @@ function receivedMessage(event) {
   // You may get a text or attachment but not both
   var messageText = message.text;
   var messageAttachments = message.attachments;
-console.log(message);
+
   if (messageText) {
 
     // If we receive a text message, check to see if it matches any special
@@ -113,6 +112,7 @@ console.log(messageData);
 }
 
 function callSendAPI(messageData) {
+  console.log(PAGE_ACCESS_TOKEN);
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_ACCESS_TOKEN },
