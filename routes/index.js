@@ -178,9 +178,7 @@ function getResponseForThisInput(senderID, message) {
 function sendResponseForThisInput(senderID, resp) {
 
   //process for new symptoms/disease or other responses.
-  var quickReply = new Object();
-
-  quickReply['content'] = {
+  var quickReply = {
     "recipient":{
       "id": senderID
     },
@@ -200,6 +198,7 @@ function sendResponseForThisInput(senderID, resp) {
       ]
     }
   };
+  console.log(quickReply);
   callSendAPI(quickReply);
 }
 
