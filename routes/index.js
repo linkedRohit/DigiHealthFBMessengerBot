@@ -9,7 +9,7 @@ var pool      =    mysql.createPool({
     host     : 'localhost',
     user     : 'root',
     password : '',
-    database : 'address_book',
+    database : 'digiHealth',
     debug    :  false
 });
 
@@ -34,7 +34,6 @@ router.get('/webhook', function(req, res) {
 router.post('/webhook', function (req, res) {
   try {
   var data = req.body;
-  console.log(data);
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
@@ -198,7 +197,6 @@ function sendResponseForThisInput(senderID, resp) {
       ]
     }
   };
-  console.log(quickReply);
   callSendAPI(quickReply);
 }
 
@@ -266,5 +264,40 @@ function callSendAPI(messageData) {
   });  
 }
 
+function welcomeGreetings() {
+  var greetingsData = {
+    "setting_type":"greeting",
+    "greeting":{
+      "text":"Welcome to digiHealth! Hope you are doing good."
+    } 
+  };
+  callThreadsManagementAPI(greetingsData);
+}
 
+function callThreadsManagementAPI(greetingsData) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
+    qs: { access_token: PAGE_ACCESS_TOKEN },
+    method: 'POST',
+    json: greetingsData
+
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var recipientId = body.recipient_id;
+      var messageId = body.message_id;
+
+      console.log("Successfully sent generic message with id %s to recipient %s", 
+        messageId, recipientId);
+    } else {
+      console.error("Unable to send message.");
+      console.error(response);
+      console.error(error);
+    }
+  });  
+}
+
+
+function manageThreads() {
+
+}
 module.exports = router;
