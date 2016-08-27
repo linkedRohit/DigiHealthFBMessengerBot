@@ -137,7 +137,7 @@ function processInput(senderID, message) {
     } else if(inpType == "userDetails") {
       
     }
-    sendTextMessage(senderID, moreSymptomsOrDisease);
+    //sendTextMessage(senderID, moreSymptomsOrDisease);
 }
 
 function NotifyUserAboutProcessing(senderID) {
@@ -167,18 +167,13 @@ function NotifyUserAboutProcessing(senderID) {
 }
 
 function processUserSuffering(senderID, message) {
-  var d = new Date();
-  var n = d.getTime();
+  //process sufferings
   var resp = getResponseForThisInput(senderID, message);
-  if(resp.type == "quickReply") {
-    sendQuickReply(senderID, resp.content);
-  } else {
-
-  }
-  return "Are you suffering from - " + n;
+  sendResponseForThisInput(senderID, resp);
 }
 
-function getResponseForThisInput(senderID, message) {
+
+function sendResponseForThisInput(senderID, resp) {
 
   //process for new symptoms/disease or other responses.
   var quickReply = new Object();
@@ -188,12 +183,12 @@ function getResponseForThisInput(senderID, message) {
       "id": senderID
     },
     "message":{
-      "text":"Sufferring from these as well?",
+      "text":"Sufferring from these as well?", //resp.title
       "quick_replies":[
         {
           "content_type":"text",
           "title":"cough",
-          "payload":"cough_payload_id"
+          "payload":"cough_payload_id" //resp.itemId
         },
         {
           "content_type":"text",
@@ -207,7 +202,7 @@ function getResponseForThisInput(senderID, message) {
 }
 
 function processInputType(senderID, message) {
-
+  return "symptoms";
 }
 
 function addToStorage(senderID, message) {
