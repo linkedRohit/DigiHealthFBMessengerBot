@@ -104,7 +104,7 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: messageText
+      text: 'jaadoooooooooooooooooooooo'
     }
   };
 console.log(messageData);
