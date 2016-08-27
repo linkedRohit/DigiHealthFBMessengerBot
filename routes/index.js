@@ -77,12 +77,6 @@ function receivedMessage(event) {
     senderID, recipientID, timeOfMessage);
   console.log(JSON.stringify(message));
 
-  var messageId = message.mid;
-
-  // You may get a text or attachment but not both
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
-
   if (messageText) {
 
     // If we receive a text message, check to see if it matches any special
@@ -106,11 +100,54 @@ function receivedMessage(event) {
         break;
 
       default:
-        sendTextMessage(senderID, messageText);
+        heyBotSendResponse(senderID, message);
     }
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
   }
+}
+
+function heyBotSendResponse(senderID, message) {
+  var messageId = message.mid;
+  // You may get a text or attachment but not both
+  var messageText = message.text;
+  var messageAttachments = message.attachments;
+  
+}
+
+function processInput(senderID, message) {
+    NotifyUserAboutProcessing(senderID);
+    addToStorage(senderID, message);
+}
+
+function NotifyUserAboutProcessing(senderID) {
+  var notifyData = {
+    "recipient":{
+      "id":senderID
+    },
+    "sender_action":"typing_on"
+  };
+
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: { access_token: PAGE_ACCESS_TOKEN },
+    method: 'POST',
+    json: notifyData
+
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      
+    } else {
+      console.error("Unable to send message.");
+      console.error(response);
+      console.error(error);
+    }
+  });
+
+}
+
+function addToStorage(senderID, message) {
+
 }
 
 function sendTextMessage(recipientId, messageText) {
@@ -127,7 +164,6 @@ console.log(messageData);
 }
 
 function callSendAPI(messageData) {
-  console.log(PAGE_ACCESS_TOKEN);
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_ACCESS_TOKEN },
