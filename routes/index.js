@@ -108,11 +108,12 @@ function receivedMessage(event) {
 }
 
 function heyBotSendResponse(senderID, message) {
+  console.log(1);
   var messageId = message.mid;
   // You may get a text or attachment but not both
   var messageText = message.text;
   var messageAttachments = message.attachments;
-  
+  processInput(senderID, message);
 }
 
 function processInput(senderID, message) {
