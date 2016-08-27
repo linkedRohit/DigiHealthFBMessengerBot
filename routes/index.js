@@ -20,6 +20,7 @@ router.get('/webhook', function(req, res) {
 });
 
 router.post('/webhook', function (req, res) {
+  try {
   console.log(1);
   var data = req.body;
   console.log(data);
@@ -51,6 +52,9 @@ router.post('/webhook', function (req, res) {
   // You must send back a 200, within 20 seconds, to let us know you've 
   // successfully received the callback. Otherwise, the request will time out.
   res.sendStatus(200);
+} catch(err){
+  console.log(err);
+}
 });
 
 function receivedAuthentication(event) {
