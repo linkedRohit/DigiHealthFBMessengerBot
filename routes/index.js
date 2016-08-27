@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var app = express();
-
+var VALIDATION_TOKEN = 'quiet-mountain-52358-digiHealth';
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
