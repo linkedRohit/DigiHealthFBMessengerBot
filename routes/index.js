@@ -20,7 +20,9 @@ router.get('/webhook', function(req, res) {
 });
 
 router.post('/webhook', function (req, res) {
+  console.log(1);
   var data = req.body;
+  console.log(data);
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
@@ -43,14 +45,22 @@ router.post('/webhook', function (req, res) {
         }
       });
     });
-
-    // Assume all went well.
-    //
-    // You must send back a 200, within 20 seconds, to let us know you've 
-    // successfully received the callback. Otherwise, the request will time out.
-    res.sendStatus(200);
   }
+  // Assume all went well.
+  //
+  // You must send back a 200, within 20 seconds, to let us know you've 
+  // successfully received the callback. Otherwise, the request will time out.
+  res.sendStatus(200);
 });
+
+function receivedAuthentication(event) {
+}
+
+function receivedDeliveryConfirmation(event) {
+}
+
+function receivedPostback(event) {
+}
 
 function receivedMessage(event) {
   var senderID = event.sender.id;
