@@ -11,8 +11,6 @@ router.get('/webhook', function(req, res) {
   if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
     console.log("Validating webhook");
-    console.error('8123891312032');
-  console.log(req);
     res.status(200).send(req.query['hub.challenge']);
   } else {
     console.error("Failed validation. Make sure the validation tokens match.");
@@ -22,8 +20,6 @@ router.get('/webhook', function(req, res) {
 
 router.post('/webhook', function (req, res) {
   var data = req.body;
-  console.error('8123891312032');
-  console.log(data);
 
   // Make sure this is a page subscription
   if (data.object == 'page') {
@@ -72,7 +68,7 @@ function receivedMessage(event) {
   // You may get a text or attachment but not both
   var messageText = message.text;
   var messageAttachments = message.attachments;
-
+console.log(message);
   if (messageText) {
 
     // If we receive a text message, check to see if it matches any special
@@ -112,7 +108,7 @@ function sendTextMessage(recipientId, messageText) {
       text: messageText
     }
   };
-
+console.log(messageData);
   callSendAPI(messageData);
 }
 
