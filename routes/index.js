@@ -2,6 +2,17 @@ var express = require('express');
 var router = express.Router();
 var app = express();
 var request = require('request');
+var mysql = require('mysql');
+
+var pool      =    mysql.createPool({
+    connectionLimit : 100, //important
+    host     : 'localhost',
+    user     : 'root',
+    password : '',
+    database : 'address_book',
+    debug    :  false
+});
+
 var VALIDATION_TOKEN = 'quiet-mountain-52358-digiHealth';
 var PAGE_ACCESS_TOKEN = 'EAAE31e3twm0BAPgJxPtB3RcCNam4edtakjUVWGFsfQ4DdmFKl47RtRTnQRRl55t1BBFjttZAg77KlMZB9REsLNvQ4Ahr3Oav8sK5mD5rQlAkKLUZCZB7rjZCdkEQNFm6qrVALt0ZBlxLz4SVZA8GQi8eHdJUxN8UohDVYZC2gTeThAZDZD';
 /* GET home page. */
@@ -22,7 +33,6 @@ router.get('/webhook', function(req, res) {
 
 router.post('/webhook', function (req, res) {
   try {
-  console.log(1);
   var data = req.body;
   console.log(data);
   // Make sure this is a page subscription
@@ -108,7 +118,7 @@ function receivedMessage(event) {
 }
 
 function heyBotSendResponse(senderID, message) {
-  console.log(1);
+
   var messageId = message.mid;
   // You may get a text or attachment but not both
   var messageText = message.text;
@@ -118,7 +128,16 @@ function heyBotSendResponse(senderID, message) {
 
 function processInput(senderID, message) {
     NotifyUserAboutProcessing(senderID);
+    var inpType = processInputType(senderID, message);
     addToStorage(senderID, message);
+    if(inpType == "symptoms") {
+      var moreSymptomsOrDisease = processUserSuffering(senderID, message);
+    } else if(inpType == "quickReply") {
+      
+    } else if(inpType == "userDetails") {
+      
+    }
+    sendTextMessage(senderID, moreSymptomsOrDisease);
 }
 
 function NotifyUserAboutProcessing(senderID) {
@@ -128,7 +147,7 @@ function NotifyUserAboutProcessing(senderID) {
     },
     "sender_action":"typing_on"
   };
-console.log(notifyData);
+
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_ACCESS_TOKEN },
@@ -147,8 +166,74 @@ console.log(notifyData);
 
 }
 
+function processUserSuffering(senderID, message) {
+  var d = new Date();
+  var n = d.getTime();
+  var resp = getResponseForThisInput(senderID, message);
+  if(resp.type == "quickReply") {
+    sendQuickReply(senderID, resp.content);
+  } else {
+
+  }
+  return "Are you suffering from - " + n;
+}
+
+function getResponseForThisInput(senderID, message) {
+
+  //process for new symptoms/disease or other responses.
+  var quickReply = new Object();
+
+  quickReply['content'] = {
+    "recipient":{
+      "id": senderID
+    },
+    "message":{
+      "text":"Sufferring from these as well?",
+      "quick_replies":[
+        {
+          "content_type":"text",
+          "title":"cough",
+          "payload":"cough_payload_id"
+        },
+        {
+          "content_type":"text",
+          "title":"cold",
+          "payload":"cold_payload_id"
+        }
+      ]
+    }
+  };
+  callSendAPI(quickReply);
+}
+
+function processInputType(senderID, message) {
+
+}
+
 function addToStorage(senderID, message) {
 
+}
+
+function sendQuickReply(recipientId, replyContent) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: { access_token: PAGE_ACCESS_TOKEN },
+    method: 'POST',
+    json: messageData
+
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var recipientId = body.recipient_id;
+      var messageId = body.message_id;
+
+      console.log("Successfully sent generic message with id %s to recipient %s", 
+        messageId, recipientId);
+    } else {
+      console.error("Unable to send message.");
+      console.error(response);
+      console.error(error);
+    }
+  }); 
 }
 
 function sendTextMessage(recipientId, messageText) {
@@ -157,10 +242,9 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: 'jaadoooooooooooooooooooooo'
+      text: messageText
     }
   };
-console.log(messageData);
   callSendAPI(messageData);
 }
 
