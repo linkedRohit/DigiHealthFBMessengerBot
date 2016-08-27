@@ -172,7 +172,9 @@ function processUserSuffering(senderID, message) {
   sendResponseForThisInput(senderID, resp);
 }
 
-
+function getResponseForThisInput(senderID, message) {
+  
+}
 function sendResponseForThisInput(senderID, resp) {
 
   //process for new symptoms/disease or other responses.
