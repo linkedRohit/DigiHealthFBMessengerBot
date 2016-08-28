@@ -117,11 +117,6 @@ function receivedMessage(event) {
 }
 
 function heyBotSendResponse(senderID, message) {
-
-  var messageId = message.mid;
-  // You may get a text or attachment but not both
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
   processInput(senderID, message);
 }
 
@@ -133,8 +128,8 @@ function processInput(senderID, message) {
       var moreSymptomsOrDisease = processUserSuffering(senderID, message);
     } else if(inpType == "quickReply") {
       
-    } else if(inpType == "userDetails") {
-      
+    } else if(inpType == "getUserDetails") {
+      var moreUserDetails = processUserDetails(senderID, message);
     }
     //sendTextMessage(senderID, moreSymptomsOrDisease);
 }
@@ -165,10 +160,45 @@ function NotifyUserAboutProcessing(senderID) {
 
 }
 
+function processUserDetails(senderID, message) {
+  var resp = getRemainingQuestionsForUser(senderID, message);
+  sendQuestionsToUserForThisInput(senderID, resp);
+}
 function processUserSuffering(senderID, message) {
   //process sufferings
   var resp = getResponseForThisInput(senderID, message);
   sendResponseForThisInput(senderID, resp);
+}
+
+function sendQuestionsToUserForThisInput(senderID, resp) {
+
+  //process for new symptoms/disease or other responses.
+  var quickReply = {
+    "recipient":{
+      "id": senderID
+    },
+    "message":{
+      "text":"What is your age?", //resp.title
+      "quick_replies":[
+        {
+          "content_type":"text",
+          "title":"0-13",
+          "payload":"child" //resp.itemId
+        },
+        {
+          "content_type":"text",
+          "title":"14-40",
+          "payload":"adult"
+        },
+        {
+          "content_type":"text",
+          "title":"40+",
+          "payload":"seniorCitizen"
+        }
+      ]
+    }
+  };
+  callSendAPI(quickReply);
 }
 
 function getResponseForThisInput(senderID, message) {
@@ -201,7 +231,22 @@ function sendResponseForThisInput(senderID, resp) {
 }
 
 function processInputType(senderID, message) {
-  return "symptoms";
+
+  var messageId = message.mid;
+  // You may get a text or attachment but not both
+  var messageText = message.text;
+  var messageAttachments = message.attachments;
+
+  var resp = new Object();
+  if(messageText == "getStarted") {
+    resp.type = 'getUserDetails';
+    //get questions to ask
+    resp.content = '';
+    return resp;
+  }
+  resp.type = 'symptoms';
+  resp.content = '';
+  return resp;
 }
 
 function addToStorage(senderID, message) {
