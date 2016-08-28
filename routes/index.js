@@ -245,7 +245,7 @@ function processInputType(senderID, message, isPostBack) {
   // You may get a text or attachment but not both
   var messageText = isPostBack ? message : message.text;
   var messageAttachments = message.attachments;
-console.log(messageText, isPostBack);
+console.log(messageText);
   var resp = new Object();
   if(messageText == "Let us setup quickly") {
     resp.type = 'getUserInfo';
