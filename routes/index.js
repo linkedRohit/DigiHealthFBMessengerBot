@@ -77,6 +77,12 @@ function receivedDeliveryConfirmation(event) {
 }
 
 function receivedPostback(event) {
+  var senderID = event.sender.id;
+  var recipientID = event.recipient.id;
+  var timeOfMessage = event.timestamp;
+  var payload = event.postback.payload;
+
+  heyBotSendResponse(senderID, payload);
 }
 
 function receivedMessage(event) {
@@ -132,7 +138,7 @@ function processInput(senderID, message) {
       var moreSymptomsOrDisease = processUserSuffering(senderID, message);
     } else if(inpType == "quickReply") {
       
-    } else if(inpType == "getUserDetails") {
+    } else if(inpType == "Let us setup quickly") {
       var moreUserDetails = processUserDetails(senderID, message);
     }
     //sendTextMessage(senderID, moreSymptomsOrDisease);
@@ -165,7 +171,7 @@ function NotifyUserAboutProcessing(senderID) {
 }
 
 function processUserDetails(senderID, message) {
-  var resp = getRemainingQuestionsForUser(senderID, message);
+  var resp = "";//getRemainingQuestionsForUser(senderID, message);
   sendQuestionsToUserForThisInput(senderID, resp);
 }
 function processUserSuffering(senderID, message) {
