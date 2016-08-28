@@ -124,7 +124,8 @@ function receivedMessage(event) {
   }
 }
 
-function heyBotSendResponse(senderID, message, isPostBack = false) {
+function heyBotSendResponse(senderID, message, isPostBack) {
+  isPostBack = isPostBack ? true : false; 
   processInput(senderID, message, isPostBack);
 }
 
