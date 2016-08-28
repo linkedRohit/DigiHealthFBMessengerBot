@@ -34,6 +34,7 @@ router.get('/webhook', function(req, res) {
 router.post('/webhook', function (req, res) {
   try {
   var data = req.body;
+  console.log(1);
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
@@ -117,6 +118,7 @@ function receivedMessage(event) {
 }
 
 function heyBotSendResponse(senderID, message) {
+  console.log(message);
   processInput(senderID, message);
 }
 
