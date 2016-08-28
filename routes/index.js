@@ -132,13 +132,14 @@ function heyBotSendResponse(senderID, message) {
 
 function processInput(senderID, message) {
     NotifyUserAboutProcessing(senderID);
-    var inpType = processInputType(senderID, message);
+    var resp = processInputType(senderID, message);
+    console.log(resp);
     addToStorage(senderID, message);
-    if(inpType == "symptoms") {
+    if(resp.type == "symptoms") {
       var moreSymptomsOrDisease = processUserSuffering(senderID, message);
-    } else if(inpType == "quickReply") {
+    } else if(resp.type == "quickReply") {
       
-    } else if(inpType == "Let us setup quickly") {
+    } else if(resp.type == "getUserInfo") {
       var moreUserDetails = processUserDetails(senderID, message);
     }
     //sendTextMessage(senderID, moreSymptomsOrDisease);
@@ -248,8 +249,8 @@ function processInputType(senderID, message) {
   var messageAttachments = message.attachments;
 
   var resp = new Object();
-  if(messageText == "getStarted") {
-    resp.type = 'getUserDetails';
+  if(messageText == "Let us setup quickly") {
+    resp.type = 'getUserInfo';
     //get questions to ask
     resp.content = '';
     return resp;
