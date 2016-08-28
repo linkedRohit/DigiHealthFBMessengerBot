@@ -34,16 +34,18 @@ router.get('/webhook', function(req, res) {
 router.post('/webhook', function (req, res) {
   try {
   var data = req.body;
-  console.log(1);
+  console.log(data);
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
     // There may be multiple if batched
     data.entry.forEach(function(pageEntry) {
+      console.log(pageEntry);
       var pageID = pageEntry.id;
       var timeOfEvent = pageEntry.time;
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
+        console.log(messagingEvent);
         if (messagingEvent.optin) {
           receivedAuthentication(messagingEvent);
         } else if (messagingEvent.message) {
