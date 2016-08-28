@@ -34,7 +34,6 @@ router.get('/webhook', function(req, res) {
 router.post('/webhook', function (req, res) {
   try {
   var data = req.body;
-  console.log(data);
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
@@ -82,7 +81,7 @@ function receivedPostback(event) {
   var timeOfMessage = event.timestamp;
   var payload = event.postback.payload;
 
-  heyBotSendResponse(senderID, payload);
+  heyBotSendResponse(senderID, payload, true);
 }
 
 function receivedMessage(event) {
@@ -125,14 +124,13 @@ function receivedMessage(event) {
   }
 }
 
-function heyBotSendResponse(senderID, message) {
-  console.log(message);
-  processInput(senderID, message);
+function heyBotSendResponse(senderID, message, isPostBack = false) {
+  processInput(senderID, message, isPostBack);
 }
 
-function processInput(senderID, message) {
+function processInput(senderID, message, isPostBack) {
     NotifyUserAboutProcessing(senderID);
-    var resp = processInputType(senderID, message);
+    var resp = processInputType(senderID, message, isPostBack);
     console.log(resp);
     addToStorage(senderID, message);
     if(resp.type == "symptoms") {
@@ -241,13 +239,13 @@ function sendResponseForThisInput(senderID, resp) {
   callSendAPI(quickReply);
 }
 
-function processInputType(senderID, message) {
+function processInputType(senderID, message, isPostBack) {
 
   var messageId = message.mid;
   // You may get a text or attachment but not both
-  var messageText = message.text;
+  var messageText = isPostBack ? message : message.text;
   var messageAttachments = message.attachments;
-
+console.log(messageText, isPostBack);
   var resp = new Object();
   if(messageText == "Let us setup quickly") {
     resp.type = 'getUserInfo';
